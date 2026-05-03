@@ -1,5 +1,7 @@
 import {AddStyle} from './Styles.js';
 
+import FoodCollection from './FoodCollection.js';
+
 AddStyle(`
     body{
         margin: 0;
@@ -53,6 +55,9 @@ class Game extends HTMLElement{
         this.radius = 20;
         // Style for drawing circle border
         this.ctx.strokeStyle = 'black';
+        
+        // Initialize food collection
+        this.snacks = new FoodCollection();
 
         this.gameUpdate = this.gameUpdate.bind(this);
         requestAnimationFrame(this.gameUpdate);
@@ -72,7 +77,7 @@ class Game extends HTMLElement{
                 return;
             }
             this.calculateMoves();
-            this.redraw();
+            this.redrawPlayer();
         }
     };
     
@@ -111,7 +116,7 @@ class Game extends HTMLElement{
         this.ctx.translate(-this.view.x, -this.view.y);
     }
     
-    redraw(){
+    redrawPlayer(){
         this.ctx.fillStyle = 'lightblue';
         this.ctx.fillRect(this.view.x, this.view.y, window.innerWidth, window.innerHeight);
         
