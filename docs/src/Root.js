@@ -1,5 +1,5 @@
 import {AddStyle} from './Styles.js';
-import Game from './Game.js'
+import Game from './Game.js';
 
 AddStyle(`
     orb-root{
@@ -84,24 +84,20 @@ class Root extends HTMLElement{
             
             // Get your player number
             socket.on('player-number', num => {
+                console.log('player-nunmber socket');
                 if(num === -1){
                     console.log('Sorry the server is full');
                 }else{
                     playerNum = parseInt(num);
-                    console.log(playerNum);
+                    socket.emit('join', 'Room 1');
+                    console.log(`Player number ${num} has connected or disconnected`);
                 }
             });
             
-            // Another player has connected or disconnected
-            socket.on('player-connection', num => {
-                socket.emit('join', 'Room 1');
-                console.log(`Player number ${num} has connected or disconnected`);
+            socket.on('state', ({players, food}) => {
             });
             
-            socket.on('state', (players, food) => {
-               console.log(players);
-               console.log(food);
-            });
+            //location.href += 'multiplayergame.html';
         });
         
     };

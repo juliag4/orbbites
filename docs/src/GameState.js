@@ -1,6 +1,6 @@
 import Player from './Player.js';
 
-class GameState{
+export default class GameState{
     constructor(){
         this.mapWidth = 3000;
         this.mapHeight = 3000;
@@ -31,4 +31,3 @@ class GameState{
     
     // TODO: collision checking
 };
-module.exports = GameState;

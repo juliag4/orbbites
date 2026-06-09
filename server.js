@@ -1,22 +1,23 @@
-const express = require('express');
-const path = require('path');
-const http = require('http');
-const PORT = process.env.PORT || 3000;
-const socketio = require('socket.io');
-const app = express();
-const server = http.createServer(app);
-const io = socketio(server);
+import express from 'express';
+import path from 'path';
+import {createServer} from 'http';
+import {Server} from 'socket.io';
+import GameState from './docs/src/GameState.js';
 
-const GameState = require('./public/src/GameState.js');
+
+const PORT = process.env.PORT || 3000;
+const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
 // Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(import.meta.dirname, 'docs')));
 
 // Start server
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 let room = '';
-let gamestate = null;
+let gamestate = new GameState();
 
 // Handle a socket connection request from web client
 const connections = [null, null, null, null, null, null, null, null];
@@ -28,25 +29,19 @@ io.on('connection', socket => {
             playerIndex = i;
             break;
         }
-    } 
-    
-    // Tell the connecting client what player number they are
-    socket.emit('player-number', playerIndex);
-    console.log(`Player ${playerIndex} has connected`);
+    }
     
     if(playerIndex === -1){ return; }
     
-    connections[playerIndex] = true;
+    // Tell client what player number has connected
+    socket.emit('player-number', playerIndex);
+    console.log(`Player ${playerIndex} has connected`);
     
-    // Tell everyone what player number has connected
-    socket.broadcast.emit('player-connection', playerIndex);
+    connections[playerIndex] = true;
     
     socket.on('join', (roomId) => {
         socket.join('Room 1');
-        if(!game){
-            gamestate = new GameState();
-        }
-        console.log(socket.id);
+        console.log('adding player!!');
         gamestate.addPlayer(socket.id);
     });
     
