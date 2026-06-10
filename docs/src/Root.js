@@ -59,6 +59,17 @@ AddStyle(`
     orb-root .single-player:hover, .multiplayer:hover{
         filter: brightness(0.7);
     }
+
+    orb-root canvas{
+        background-color: lightblue;
+        object-fit: contain;
+    }
+
+    orb-root .hidden{
+        display: none;
+    }
+
+    
 `);
 
 class Root extends HTMLElement{
@@ -73,13 +84,19 @@ class Root extends HTMLElement{
                     <button class="multiplayer input-button">Multi Player Mode</button>
                 </div>
             </div>
+        
+            <canvas class="hidden"></canvas>
         `;
+        
+        let playerNum = -1;
+        
+        const canvas = this.querySelector('canvas');
         
         this.querySelector('.single-player').addEventListener('click', () => location.href += 'game.html');
         
         this.querySelector('.multiplayer').addEventListener('click', () => {
             let gameMode = 'multiPlayer';
-            let playerNum = 0;
+            playerNum = 0;
             const socket = io();
             
             // Get your player number
@@ -95,9 +112,16 @@ class Root extends HTMLElement{
             });
             
             socket.on('state', ({players, food}) => {
+                console.log('all players', players);
+                console.log('client player num', playerNum);
             });
             
-            //location.href += 'multiplayergame.html';
+            this.querySelector('.name-input-view').classList.add('hidden');
+            canvas.classList.remove('hidden');
+        });
+        
+        canvas.addEventListener('mousemove', () => {
+           console.log('mouse moved in canvas!!!');
         });
         
     };
