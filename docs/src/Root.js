@@ -1,5 +1,6 @@
 import {AddStyle} from './Styles.js';
 import Game from './Game.js';
+import MultiplayerGame from './MultiplayerGame.js';
 
 AddStyle(`
     orb-root{
@@ -60,16 +61,9 @@ AddStyle(`
         filter: brightness(0.7);
     }
 
-    orb-root canvas{
-        background-color: lightblue;
-        object-fit: contain;
-    }
-
     orb-root .hidden{
         display: none;
     }
-
-    
 `);
 
 class Root extends HTMLElement{
@@ -81,49 +75,32 @@ class Root extends HTMLElement{
                 <div class="input-button-container">
                     <input class="username input-button" placeholder="Name" spellcheck="false"></input>
                     <button class="single-player input-button">Single Player Mode</button>
-                    <button class="multiplayer input-button">Multi Player Mode</button>
+                    <button class="multiplayer input-button">Multiplayer Mode</button>
                 </div>
             </div>
-        
-            <canvas class="hidden"></canvas>
         `;
         
-        let playerNum = -1;
-        
-        const canvas = this.querySelector('canvas');
-        
-        this.querySelector('.single-player').addEventListener('click', () => location.href += 'game.html');
+        document.querySelector('orb-game').style.width = 0;
+        document.querySelector('orb-game').style.height = 0;
+        document.querySelector('orb-multiplayer').style.width = 0;
+        document.querySelector('orb-multiplayer').style.height = 0;
+                        
+        this.querySelector('.single-player').addEventListener('click', () => {
+            this.innerHTML = '';
+            this.style.width = 0;
+            this.style.height = 0;
+            document.querySelector('orb-game').style.width = '100vw';
+            document.querySelector('orb-game').style.height = '100vh';
+        });
         
         this.querySelector('.multiplayer').addEventListener('click', () => {
-            let gameMode = 'multiPlayer';
-            playerNum = 0;
-            const socket = io();
-            
-            // Get your player number
-            socket.on('player-number', num => {
-                console.log('player-nunmber socket');
-                if(num === -1){
-                    console.log('Sorry the server is full');
-                }else{
-                    playerNum = parseInt(num);
-                    socket.emit('join', 'Room 1');
-                    console.log(`Player number ${num} has connected or disconnected`);
-                }
-            });
-            
-            socket.on('state', ({players, food}) => {
-                console.log('all players', players);
-                console.log('client player num', playerNum);
-            });
-            
-            this.querySelector('.name-input-view').classList.add('hidden');
-            canvas.classList.remove('hidden');
+            console.log('clicked button!!!')
+            this.innerHTML = '';
+            this.style.width = 0;
+            this.style.height = 0;
+            document.querySelector('orb-multiplayer').style.width = '100vw';
+            document.querySelector('orb-multiplayer').style.height = '100vh';
         });
-        
-        canvas.addEventListener('mousemove', () => {
-           console.log('mouse moved in canvas!!!');
-        });
-        
     };
 };
 customElements.define('orb-root', Root);

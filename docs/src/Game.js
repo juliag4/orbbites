@@ -21,11 +21,16 @@ AddStyle(`
 `);
 
 export default class Game extends HTMLElement{
-    connectedCallback(){
+    constructor(){
+        super();
+        
+        this.style.width = '100vw';
+        this.style.height = '100vh';
+        
         this.innerHTML = `
             <canvas></canvas>
         `;
-        
+                
         this.canvas = this.querySelector('canvas');
         this.ctx = this.canvas.getContext('2d');
         
