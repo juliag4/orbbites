@@ -44,7 +44,9 @@ export default class Game extends HTMLElement{
         this.view = {x: 0, y: 0};
         
         this.map = {width: 3000, height: 3000};
-        
+    };
+    
+    startGame(){
         // Changes mouse position based on mousemove event
         this.canvas.addEventListener('mousemove', (e) => {
             this.mousePos.x = e.clientX;
@@ -66,7 +68,7 @@ export default class Game extends HTMLElement{
 
         this.gameUpdate = this.gameUpdate.bind(this);
         requestAnimationFrame(this.gameUpdate);
-    };
+    }
     
     gameUpdate(currentTime){
         requestAnimationFrame(this.gameUpdate);

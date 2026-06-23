@@ -78,23 +78,19 @@ class Root extends HTMLElement{
                     <button class="multiplayer input-button">Multiplayer Mode</button>
                 </div>
             </div>
+        
+            <orb-game class="hidden"></orb-game>
+            <orb-multiplayer class="hidden"></orb-multiplayer>
         `;
         
-        document.querySelector('orb-game').style.width = 0;
-        document.querySelector('orb-game').style.height = 0;
-        document.querySelector('orb-multiplayer').style.width = 0;
-        document.querySelector('orb-multiplayer').style.height = 0;
                         
         this.querySelector('.single-player').addEventListener('click', () => {
-            this.innerHTML = '';
-            this.style.width = 0;
-            this.style.height = 0;
-            document.querySelector('orb-game').style.width = '100vw';
-            document.querySelector('orb-game').style.height = '100vh';
+            this.querySelector('.name-input-view').classList.add('hidden');
+            this.querySelector('orb-game').classList.remove('hidden');
+            this.querySelector('orb-game').startGame();
         });
         
         this.querySelector('.multiplayer').addEventListener('click', () => {
-            console.log('clicked button!!!')
             this.innerHTML = '';
             this.style.width = 0;
             this.style.height = 0;
