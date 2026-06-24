@@ -33,6 +33,9 @@ export default class MultiplayerGame extends HTMLElement{
         
         let gameMode = 'multiPlayer';
         let playerNum = 0;
+    }
+    
+    startGame(){
         const socket = io();
         
         // Get your player number
@@ -51,8 +54,6 @@ export default class MultiplayerGame extends HTMLElement{
             console.log('all players', players);
             console.log('client player num', playerNum);
         });
-        
-        
     }
 }
 customElements.define('orb-multiplayer', MultiplayerGame);

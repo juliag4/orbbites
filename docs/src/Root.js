@@ -11,7 +11,7 @@ AddStyle(`
         font-family: sans-serif;
     }
 
-    orb-root .name-input-view{
+    orb-root .title-menu-view{
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -70,7 +70,7 @@ class Root extends HTMLElement{
     constructor(){
         super();
         this.innerHTML = `
-            <div class="name-input-view">
+            <div class="title-menu-view">
                 <div class="header">OrbBites</div>
                 <div class="input-button-container">
                     <input class="username input-button" placeholder="Name" spellcheck="false"></input>
@@ -83,19 +83,20 @@ class Root extends HTMLElement{
             <orb-multiplayer class="hidden"></orb-multiplayer>
         `;
         
+        const titleMenuView = this.querySelector('.title-menu-view');
+        const singlePlayerGame = this.querySelector('orb-game');
+        const multiPlayerGame = this.querySelector('orb-multiplayer');
                         
         this.querySelector('.single-player').addEventListener('click', () => {
-            this.querySelector('.name-input-view').classList.add('hidden');
-            this.querySelector('orb-game').classList.remove('hidden');
-            this.querySelector('orb-game').startGame();
+            titleMenuView.classList.add('hidden');
+            singlePlayerGame.classList.remove('hidden');
+            singlePlayerGame.startGame();
         });
         
         this.querySelector('.multiplayer').addEventListener('click', () => {
-            this.innerHTML = '';
-            this.style.width = 0;
-            this.style.height = 0;
-            document.querySelector('orb-multiplayer').style.width = '100vw';
-            document.querySelector('orb-multiplayer').style.height = '100vh';
+            titleMenuView.classList.add('hidden');
+            multiPlayerGame.classList.remove('hidden');
+            multiPlayerGame.startGame();
         });
     };
 };
