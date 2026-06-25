@@ -27,15 +27,18 @@ export default class MultiplayerGame extends HTMLElement{
         this.innerHTML = `
             <canvas></canvas>
         `;
-                
+        
         this.canvas = this.querySelector('canvas');
         this.ctx = this.canvas.getContext('2d');
         
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        
         let gameMode = 'multiPlayer';
-        let playerNum = 0;
     }
     
     startGame(){
+        let playerNum = 0;
         const socket = io();
         
         // Get your player number
@@ -50,9 +53,23 @@ export default class MultiplayerGame extends HTMLElement{
             }
         });
         
-        socket.on('state', ({players, food}) => {
-            console.log('all players', players);
-            console.log('client player num', playerNum);
+        socket.on('state', ({players, food}) => {            
+            // Draw everything here
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.ctx.fillStyle = 'lightblue';
+            this.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+            
+            for(const [key, player] of Object.entries(players)){
+                // Styling of the circle itself
+                this.ctx.beginPath();
+                this.ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
+                this.ctx.fillStyle = player.color;
+                this.ctx.fill();
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
+                this.ctx.closePath();
+            }
         });
     }
 }

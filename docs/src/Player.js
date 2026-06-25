@@ -3,6 +3,7 @@ export default class Player{
         this.id = id;
         this.x = x;
         this.y = y;
+        this.view = {x: 0, y: 0};
         this.radius = radius;
         this.color = color;
     }
