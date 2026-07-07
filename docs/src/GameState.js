@@ -2,8 +2,8 @@ import Player from './Player.js';
 
 export default class GameState{
     constructor(){
-        this.mapWidth = 3000;
-        this.mapHeight = 3000;
+        this.mapWidth = 300;
+        this.mapHeight = 300;
         this.initialPlayerRadius = 20;
 
         this.players = {};

@@ -30,7 +30,7 @@ export default class MultiplayerGame extends HTMLElement{
         
         this.canvas = this.querySelector('canvas');
         this.ctx = this.canvas.getContext('2d');
-        
+                
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         
@@ -53,7 +53,7 @@ export default class MultiplayerGame extends HTMLElement{
             }
         });
         
-        socket.on('state', ({players, food}) => {            
+        socket.on('state', ({players, food}) => {
             // Draw everything here
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             
@@ -70,6 +70,11 @@ export default class MultiplayerGame extends HTMLElement{
                 this.ctx.stroke();
                 this.ctx.closePath();
             }
+        });
+                
+        // event listener for mouse move
+        this.canvas.addEventListener('mousemove', (e) => {
+            socket.emit('mouse-move', e.clientX, e.clientY, this.view.x, this.view.y);
         });
     }
 }

@@ -89,9 +89,6 @@ export default class Game extends HTMLElement{
     };
     
     calculateMoves(){
-        // Previous view position
-        const prevViewX = this.view.x;
-        const prevViewY = this.view.y;
         // Calculates how far to move the circle
         const xDiff = this.mousePos.x - (this.circlePosAbs.x - this.view.x);
         const yDiff = this.mousePos.y - (this.circlePosAbs.y - this.view.y);
