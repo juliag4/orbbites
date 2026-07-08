@@ -74,7 +74,8 @@ export default class MultiplayerGame extends HTMLElement{
                 
         // event listener for mouse move
         this.canvas.addEventListener('mousemove', (e) => {
-            socket.emit('mouse-move', e.clientX, e.clientY, this.view.x, this.view.y);
+            socket.emit('mouse-move', e.clientX, e.clientY, this.canvas.width, this.canvas.height);
+            // Next step: move view window
         });
     }
 }

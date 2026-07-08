@@ -11,9 +11,9 @@ export default class Player{
     }
     
     // changes player's x and y position
-    calculateMoves(mouseX, mouseY, viewX, viewY){
-        const mouseXDiff = mouseX - (this.x - viewX);
-        const mouseYDiff = mouseY - (this.y - viewY);
+    calculateMoves(mouseX, mouseY){
+        const mouseXDiff = mouseX - (this.x - this.view.x);
+        const mouseYDiff = mouseY - (this.y - this.view.y);
         
         const changeX = mouseXDiff <= 0 ? Math.max(mouseXDiff, -this.maxSpeed) : Math.min(mouseXDiff, this.maxSpeed);
         const changeY = mouseYDiff <= 0 ? Math.max(mouseYDiff, -this.maxSpeed) : Math.min(mouseYDiff, this.maxSpeed);
@@ -22,7 +22,17 @@ export default class Player{
         this.y += changeY;
     }
     
-    // TODO: create function for calculating new view or put into the function above
+    // calculate's player's view
+    calculateView(canvasWidth, canvasHeight){
+        this.view.x = this.x - canvasWidth / 2;
+        this.view.y = this.y - canvasHeight / 2;
+    }
     
+    // adjust player's view to canvas
+    adjustView(canvasWidth, canvasHeight, mapWidth, mapHeight){
+        // Check to ensure that view x and y aren't outside of of canvas boundaries
+        this.view.x = Math.max(0, Math.min(this.view.x, mapWidth - canvasWidth));
+        this.view.y = Math.max(0, Math.min(this.view.y, mapHeight - canvasHeight));
+    }
 }
 

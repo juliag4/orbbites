@@ -45,10 +45,11 @@ io.on('connection', socket => {
         gamestate.addPlayer(socket.id);
     });
     
-    socket.on('mouse-move', (mouseX, mouseY, viewX, viewY) => {
+    socket.on('mouse-move', (mouseX, mouseY, canvasWidth, canvasHeight) => {
         if(gamestate.players[socket.id]){
-            gamestate.players[socket.id].calculateMoves(mouseX, mouseY, viewX, viewY);
-            // TODO: call function for calculating view?
+            gamestate.players[socket.id].calculateMoves(mouseX, mouseY);
+            gamestate.players[socket.id].calculateView(canvasWidth, canvasHeight);
+            gamestate.players[socket.id].adjustView(canvasWidth, canvasHeight, gamestate.mapWidth, gamestate.mapHeight);
         }
     });
 
