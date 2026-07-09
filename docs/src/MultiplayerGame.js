@@ -75,8 +75,25 @@ export default class MultiplayerGame extends HTMLElement{
         // event listener for mouse move
         this.canvas.addEventListener('mousemove', (e) => {
             socket.emit('mouse-move', e.clientX, e.clientY, this.canvas.width, this.canvas.height);
-            // Next step: move view window
+            // Translates context after player view updates
+            socket.on('player-view-update', ({player}) => {
+                this.translateContext(player.view);
+            });
+            // Next step: get updates for all player's positions and redraw??
         });
+    }
+    
+    translateContext(view){
+        // Undo the transform
+        this.ctx.resetTransform();
+        
+        this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        
+        // Move the view window
+        this.ctx.translate(-view.x, -view.y);
     }
 }
 customElements.define('orb-multiplayer', MultiplayerGame);

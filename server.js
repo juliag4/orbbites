@@ -50,6 +50,7 @@ io.on('connection', socket => {
             gamestate.players[socket.id].calculateMoves(mouseX, mouseY);
             gamestate.players[socket.id].calculateView(canvasWidth, canvasHeight);
             gamestate.players[socket.id].adjustView(canvasWidth, canvasHeight, gamestate.mapWidth, gamestate.mapHeight);
+            io.emit('player-view-update', {player: gamestate.players[socket.id]});
         }
     });
 
