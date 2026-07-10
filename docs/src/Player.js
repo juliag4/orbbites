@@ -3,6 +3,8 @@ export default class Player{
         this.id = id;
         this.x = x;
         this.y = y;
+        this.mouseX = x;
+        this.mouseY = y;
         this.radius = radius;
         this.color = color;
         this.maxSpeed = 3;

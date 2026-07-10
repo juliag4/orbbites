@@ -45,14 +45,20 @@ io.on('connection', socket => {
         gamestate.addPlayer(socket.id);
     });
     
-    socket.on('mouse-move', (mouseX, mouseY, canvasWidth, canvasHeight) => {
+    socket.on('mouse-move', (mouseX, mouseY) => {
         if(gamestate.players[socket.id]){
-            gamestate.players[socket.id].calculateMoves(mouseX, mouseY);
-            gamestate.players[socket.id].calculateView(canvasWidth, canvasHeight);
-            gamestate.players[socket.id].adjustView(canvasWidth, canvasHeight, gamestate.mapWidth, gamestate.mapHeight);
-            io.emit('player-view-update', {player: gamestate.players[socket.id]});
+            gamestate.players[socket.id].mouseX = mouseX;
+            gamestate.players[socket.id].mouseY = mouseY;
         }
     });
+//    socket.on('mouse-move', (mouseX, mouseY, canvasWidth, canvasHeight) => {
+//        if(gamestate.players[socket.id]){
+//            gamestate.players[socket.id].calculateMoves(mouseX, mouseY);
+//            gamestate.players[socket.id].calculateView(canvasWidth, canvasHeight);
+//            gamestate.players[socket.id].adjustView(canvasWidth, canvasHeight, gamestate.mapWidth, gamestate.mapHeight);
+//            io.emit('player-view-update', {player: gamestate.players[socket.id], players: gamestate.players});
+//        }
+//    });
 
     socket.on('disconnect', () => {
         gamestate.deletePlayer(socket.id);
@@ -61,4 +67,4 @@ io.on('connection', socket => {
 
 setInterval(() => {
     io.emit('state', {players: gamestate.players, food: gamestate.foodCollection});
-}, 1000);
+}, 100);

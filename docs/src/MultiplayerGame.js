@@ -53,33 +53,37 @@ export default class MultiplayerGame extends HTMLElement{
             }
         });
         
+        // This is all wrong
+        // Change to requestAnimationFrame
+        
         socket.on('state', ({players, food}) => {
-            // Draw everything here
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+              // Draw everything here
+//            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+//            
+//            this.ctx.fillStyle = 'lightblue';
+//            this.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+//            
+//            for(const [key, player] of Object.entries(players)){
+//                // Styling of the circle itself
+//                this.ctx.beginPath();
+//                this.ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
+//                this.ctx.fillStyle = player.color;
+//                this.ctx.fill();
+//                this.ctx.lineWidth = 2;
+//                this.ctx.stroke();
+//                this.ctx.closePath();
+//            }
             
-            this.ctx.fillStyle = 'lightblue';
-            this.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-            
-            for(const [key, player] of Object.entries(players)){
-                // Styling of the circle itself
-                this.ctx.beginPath();
-                this.ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
-                this.ctx.fillStyle = player.color;
-                this.ctx.fill();
-                this.ctx.lineWidth = 2;
-                this.ctx.stroke();
-                this.ctx.closePath();
-            }
+            // Translates context after player view updates
+//            socket.on('player-view-update', ({player, players}) => {
+//                this.translateContext(player.view);
+//                this.redrawPlayers(players);
+//            });
         });
                 
         // event listener for mouse move
         this.canvas.addEventListener('mousemove', (e) => {
-            socket.emit('mouse-move', e.clientX, e.clientY, this.canvas.width, this.canvas.height);
-            // Translates context after player view updates
-            socket.on('player-view-update', ({player}) => {
-                this.translateContext(player.view);
-            });
-            // Next step: get updates for all player's positions and redraw??
+            socket.emit('mouse-move', e.clientX, e.clientY);
         });
     }
     
@@ -94,6 +98,22 @@ export default class MultiplayerGame extends HTMLElement{
         
         // Move the view window
         this.ctx.translate(-view.x, -view.y);
+        
+        this.ctx.fillStyle = 'lightblue';
+        this.ctx.fillRect(view.x, view.y, window.innerWidth, window.innerHeight);
     }
+    
+    redrawPlayers(players){
+        for(const [key, player] of Object.entries(players)){
+            // Styling of the circle itself
+            this.ctx.beginPath();
+            this.ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
+            this.ctx.fillStyle = player.color;
+            this.ctx.fill();
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+            this.ctx.closePath();
+        }
+    };
 }
 customElements.define('orb-multiplayer', MultiplayerGame);
