@@ -73,7 +73,7 @@ export default class MultiplayerGame extends HTMLElement{
         const isNotEmpty = Object.keys(this.gameState.players).length > 0;
         if(isNotEmpty && this.gameState.playerId){
             this.translateContext(this.gameState.players[this.gameState.playerId].view);
-            this.redrawPlayers(this.gameState.players);
+            this.redraw(this.gameState.players);
         }
 
         requestAnimationFrame(this.gameUpdate);
@@ -92,7 +92,12 @@ export default class MultiplayerGame extends HTMLElement{
         this.ctx.translate(-view.x, -view.y);
     }
     
-    redrawPlayers(players){
+    redraw(players){
+        // Border drawing
+        this.ctx.strokeStyle = 'black';
+        this.ctx.lineWidth = 40;
+        this.ctx.strokeRect(0, 0, this.gameState.mapWidth, this.gameState.mapHeight);
+        
         for(const [key, player] of Object.entries(players)){
             // Styling of the circle itself
             this.ctx.beginPath();
