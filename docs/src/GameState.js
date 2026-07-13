@@ -8,13 +8,20 @@ export default class GameState{
 
         this.players = {};
         this.foodCollection = {};
+        
+        this.playerId = null;
     };
+    
+    updateState(players, foodCollection){
+        this.players = players;
+        this.foodCollection = foodCollection;
+    }
     
     addPlayer(id){
         const xPos = Math.floor(Math.random() * ((this.mapWidth - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius;
         const yPos = Math.floor(Math.random() * ((this.mapHeight - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius;
         const color = this.getRandomRGB();
-
+        
         this.players[String(id)] = new Player(String(id), xPos, yPos, this.initialPlayerRadius, color);
     }
     
@@ -27,6 +34,10 @@ export default class GameState{
       const g = Math.floor(Math.random() * 256);
       const b = Math.floor(Math.random() * 256);
       return `rgb(${r}, ${g}, ${b})`;
+    }
+    
+    getPlayerId(){
+        return this.players[this.playerId] || null;
     }
     
     // TODO: collision checking

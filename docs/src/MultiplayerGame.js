@@ -1,5 +1,6 @@
 import {AddStyle} from './Styles.js';
 
+import GameState from './GameState.js';
 import FoodCollection from './FoodCollection.js';
 
 AddStyle(`
@@ -15,7 +16,6 @@ AddStyle(`
     }
 
     canvas{
-        background-color: lightblue;
         object-fit: contain;
     }
 `);
@@ -35,6 +35,9 @@ export default class MultiplayerGame extends HTMLElement{
         this.canvas.height = window.innerHeight;
         
         let gameMode = 'multiPlayer';
+        
+        this.gameState = new GameState();
+        this.gameUpdate = this.gameUpdate.bind(this);
     }
     
     startGame(){
@@ -52,39 +55,28 @@ export default class MultiplayerGame extends HTMLElement{
                 console.log(`Player number ${num} has connected or disconnected`);
             }
         });
-        
-        // This is all wrong
-        // Change to requestAnimationFrame
-        
-        socket.on('state', ({players, food}) => {
-              // Draw everything here
-//            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-//            
-//            this.ctx.fillStyle = 'lightblue';
-//            this.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-//            
-//            for(const [key, player] of Object.entries(players)){
-//                // Styling of the circle itself
-//                this.ctx.beginPath();
-//                this.ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
-//                this.ctx.fillStyle = player.color;
-//                this.ctx.fill();
-//                this.ctx.lineWidth = 2;
-//                this.ctx.stroke();
-//                this.ctx.closePath();
-//            }
-            
-            // Translates context after player view updates
-//            socket.on('player-view-update', ({player, players}) => {
-//                this.translateContext(player.view);
-//                this.redrawPlayers(players);
-//            });
+                
+        socket.on('state', ({players, food, id}) => {
+            this.gameState.playerId = String(id);
+            this.gameState.updateState(players, food);
         });
                 
         // event listener for mouse move
         this.canvas.addEventListener('mousemove', (e) => {
-            socket.emit('mouse-move', e.clientX, e.clientY);
+            socket.emit('mouse-move', e.clientX, e.clientY, this.canvas.width, this.canvas.height);
         });
+        
+        requestAnimationFrame(this.gameUpdate);
+    }
+    
+    gameUpdate(currentTime){
+        const isNotEmpty = Object.keys(this.gameState.players).length > 0;
+        if(isNotEmpty && this.gameState.playerId){
+            this.translateContext(this.gameState.players[this.gameState.playerId].view);
+            this.redrawPlayers(this.gameState.players);
+        }
+
+        requestAnimationFrame(this.gameUpdate);
     }
     
     translateContext(view){
@@ -92,15 +84,12 @@ export default class MultiplayerGame extends HTMLElement{
         this.ctx.resetTransform();
         
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        
+                
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         
         // Move the view window
         this.ctx.translate(-view.x, -view.y);
-        
-        this.ctx.fillStyle = 'lightblue';
-        this.ctx.fillRect(view.x, view.y, window.innerWidth, window.innerHeight);
     }
     
     redrawPlayers(players){
