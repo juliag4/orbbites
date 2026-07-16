@@ -70,6 +70,7 @@ export default class MultiplayerGame extends HTMLElement{
     }
     
     gameUpdate(currentTime){
+        // check this.gameState.players[this.gameState.playerId] is within the bounds of the map
         const isNotEmpty = Object.keys(this.gameState.players).length > 0;
         if(isNotEmpty && this.gameState.playerId){
             this.translateContext(this.gameState.players[this.gameState.playerId].view);
@@ -95,8 +96,12 @@ export default class MultiplayerGame extends HTMLElement{
     redraw(players){
         // Border drawing
         this.ctx.strokeStyle = 'black';
-        this.ctx.lineWidth = 40;
-        this.ctx.strokeRect(0, 0, this.gameState.mapWidth, this.gameState.mapHeight);
+        this.ctx.lineWidth = this.gameState.borderThickness;
+        // Fits the whole border inside of our current map
+        this.ctx.strokeRect(this.ctx.lineWidth / 2,
+                            this.ctx.lineWidth / 2,
+                            this.gameState.mapWidth - this.ctx.lineWidth,
+                            this.gameState.mapHeight - this.ctx.lineWidth);
         
         for(const [key, player] of Object.entries(players)){
             // Styling of the circle itself

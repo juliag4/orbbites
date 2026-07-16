@@ -4,6 +4,7 @@ export default class GameState{
     constructor(){
         this.mapWidth = 3000;
         this.mapHeight = 3000;
+        this.borderThickness = 40;
         this.initialPlayerRadius = 20;
 
         this.players = {};
@@ -18,7 +19,8 @@ export default class GameState{
     }
     
     addPlayer(id){
-        const xPos = Math.floor(Math.random() * ((this.mapWidth - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius;
+        const xPos = Math.floor(Math.random() * ((this.mapWidth - this.initialPlayerRadius -
+            this.borderThickness) - this.initialPlayerRadius - this.borderThickness)) + this.initialPlayerRadius + this.borderThickness;
         const yPos = Math.floor(Math.random() * ((this.mapHeight - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius;
         const color = this.getRandomRGB();
         
