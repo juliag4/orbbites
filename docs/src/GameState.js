@@ -1,4 +1,5 @@
 import Player from './Player.js';
+import FoodCollection from './FoodCollection.js';
 
 export default class GameState{
     constructor(){
@@ -8,9 +9,11 @@ export default class GameState{
         this.initialPlayerRadius = 20;
 
         this.players = {};
-        this.foodCollection = {};
-        
         this.playerId = null;
+        
+        this.foodCollection = new FoodCollection();
+        this.initialFoodCount = (this.mapWidth * this.mapHeight) / 10000;
+        this.foodRadius = 10;
     };
     
     updateState(players, foodCollection){
@@ -19,9 +22,10 @@ export default class GameState{
     }
     
     addPlayer(id){
-        const xPos = Math.floor(Math.random() * ((this.mapWidth - this.initialPlayerRadius -
-            this.borderThickness) - this.initialPlayerRadius - this.borderThickness)) + this.initialPlayerRadius + this.borderThickness;
-        const yPos = Math.floor(Math.random() * ((this.mapHeight - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius;
+        const positionMultiplier = (this.mapWidth - this.initialPlayerRadius -
+                                    this.borderThickness) - this.initialPlayerRadius - this.borderThickness;
+        const xPos = Math.floor(Math.random() * (positionMultiplier)) + this.initialPlayerRadius + this.borderThickness;
+        const yPos = Math.floor(Math.random() * (positionMultiplier)) + this.initialPlayerRadius + this.borderThickness;
         const color = this.getRandomRGB();
         
         this.players[String(id)] = new Player(String(id), xPos, yPos, this.initialPlayerRadius, color);
@@ -43,4 +47,14 @@ export default class GameState{
     }
     
     // TODO: collision checking
+    
+    generateFoodCollection(){
+        for(let i = 0; i < this.initialFoodCount; i++){
+            const positionMultiplier = (this.mapWidth - this.foodRadius - this.borderThickness) - this.foodRadius - this.borderThickness;
+            const xPos = Math.floor(Math.random() * (positionMultiplier)) + this.foodRadius + this.borderThickness;
+            const yPos = Math.floor(Math.random() * (positionMultiplier)) + this.foodRadius + this.borderThickness;
+            const color = this.getRandomRGB();
+            this.foodCollection.addFood(xPos, yPos, this.foodRadius, color);
+        }
+    }
 };

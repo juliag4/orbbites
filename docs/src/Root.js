@@ -98,6 +98,12 @@ class Root extends HTMLElement{
             multiPlayerGame.classList.remove('hidden');
             multiPlayerGame.startGame();
         });
+        
+        this.addEventListener('gameOver', () => {
+           titleMenuView.classList.remove('hidden');
+           multiPlayerGame.classList.add('hidden');
+           window.location.reload();
+        });
     };
 };
 customElements.define('orb-root', Root);

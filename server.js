@@ -18,6 +18,7 @@ server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 let room = '';
 let gamestate = new GameState();
+gamestate.generateFoodCollection();
 
 // Handle a socket connection request from web client
 const connections = [null, null, null, null, null, null, null, null];
@@ -55,6 +56,10 @@ io.on('connection', socket => {
         }
     });
 
+    socket.on('game-over', () => {
+        gamestate.deletePlayer(socket.id);
+    });
+    
     socket.on('disconnect', () => {
         gamestate.deletePlayer(socket.id);
     });

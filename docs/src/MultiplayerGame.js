@@ -66,13 +66,31 @@ export default class MultiplayerGame extends HTMLElement{
             socket.emit('mouse-move', e.clientX, e.clientY, this.canvas.width, this.canvas.height);
         });
         
+        this.addEventListener('gameOver', () => {
+            socket.emit('game-over');
+        });
+        
         requestAnimationFrame(this.gameUpdate);
     }
     
+    // checks this.gameState.players[this.gameState.playerId] is within the bounds of the map
+    // if player isn't, then the main page reloads
     gameUpdate(currentTime){
-        // check this.gameState.players[this.gameState.playerId] is within the bounds of the map
         const isNotEmpty = Object.keys(this.gameState.players).length > 0;
         if(isNotEmpty && this.gameState.playerId){
+            const player = this.gameState.players[this.gameState.playerId];
+            const hasCrossedRight = player.x > (this.gameState.mapWidth - this.gameState.borderThickness) - player.radius;
+            const hasCrossedLeft = player.x < this.gameState.borderThickness + player.radius;
+            const hasCrossedBottom = player.y > (this.gameState.mapHeight - this.gameState.borderThickness) - player.radius;
+            const hasCrossedTop = player.y < this.gameState.borderThickness + player.radius;
+            const playerDead = hasCrossedRight || hasCrossedLeft || hasCrossedBottom || hasCrossedTop;
+            if(playerDead){
+                this.ctx.resetTransform();
+                this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                const gameOverEvent = new CustomEvent('gameOver', { bubbles: true });
+                this.dispatchEvent(gameOverEvent);
+                return;
+            }
             this.translateContext(this.gameState.players[this.gameState.playerId].view);
             this.redraw(this.gameState.players);
         }
@@ -102,6 +120,17 @@ export default class MultiplayerGame extends HTMLElement{
                             this.ctx.lineWidth / 2,
                             this.gameState.mapWidth - this.ctx.lineWidth,
                             this.gameState.mapHeight - this.ctx.lineWidth);
+        
+        for(const food of this.gameState.foodCollection.foods){
+            // Styling of the circle itself
+            this.ctx.beginPath();
+            this.ctx.arc(food.x, food.y, food.radius, 0, 2 * Math.PI);
+            this.ctx.fillStyle = food.color;
+            this.ctx.fill();
+            this.ctx.lineWidth = 1;
+            this.ctx.stroke();
+            this.ctx.closePath();
+        }
         
         for(const [key, player] of Object.entries(players)){
             // Styling of the circle itself
