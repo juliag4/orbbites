@@ -3,7 +3,8 @@ export default class Food {
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.area = Math.round(Math.PI * (this.radius * this.radius));
         this.color = color;
-        this.isEaten = false;
+        this.isConsumed = false;
     }
 }

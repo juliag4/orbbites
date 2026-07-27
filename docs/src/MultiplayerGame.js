@@ -91,7 +91,19 @@ export default class MultiplayerGame extends HTMLElement{
                 this.dispatchEvent(gameOverEvent);
                 return;
             }
-            this.translateContext(this.gameState.players[this.gameState.playerId].view);
+            // TODO: check for collision with food here, increase radius if collided
+            for(const food of this.gameState.foodCollection){
+                if(food.isConsumed){ continue; }
+                const foodIsConsumed = this.checkFullOverlap(player, food);
+                if(foodIsConsumed){
+                    food.isConsumed = true;
+                    // TODO: turn pseudocode into usable code for increasing player radius
+                    // const newPlayerArea = player.getArea() + food.area;
+                    // player.radius = player.getRadius(newPlayerArea)
+                }
+            }
+            // TODO: after checking collision with food, check collision with player
+            this.translateContext(player.view);
             this.redraw(this.gameState.players);
         }
 
@@ -143,5 +155,15 @@ export default class MultiplayerGame extends HTMLElement{
             this.ctx.closePath();
         }
     };
+    
+    // checks if food is entirely within player's boundaries
+    // returns true if food is consumed, false otherwise
+    checkFullOverlap(player, food){
+        const rightOverlap = food.x + food.radius <= player.x + player.radius;
+        const leftOverlap = food.x - food.radius >= player.x - player.radius;
+        const bottomOverlap = food.y + food.radius <= player.y + player.radius;
+        const topOverlap = food.y - food.radius <= player.y - player.radius;
+        return rightOverlap && leftOverlap && bottomOverlap && topOverlap;
+    }
 }
 customElements.define('orb-multiplayer', MultiplayerGame);
