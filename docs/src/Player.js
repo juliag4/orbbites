@@ -37,4 +37,3 @@ export default class Player{
         this.view.y = Math.max(0, Math.min(this.view.y, mapHeight - canvasHeight));
     }
 }
-

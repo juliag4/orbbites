@@ -55,6 +55,14 @@ io.on('connection', socket => {
             gamestate.players[socket.id].adjustView(canvasWidth, canvasHeight, gamestate.mapWidth, gamestate.mapHeight);
         }
     });
+    
+    // TODO: split this in two, one for player and one for foodCollection
+    socket.on('update', (player, foodCollection) => {
+        if(gamestate.players[socket.id]){
+            gamestate.players[socket.id].radius = player.radius;
+        }
+        gamestate.foodCollection = foodCollection;
+    });
 
     socket.on('game-over', () => {
         gamestate.deletePlayer(socket.id);
