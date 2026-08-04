@@ -73,8 +73,12 @@ export default class MultiplayerGame extends HTMLElement{
             socket.emit('game-over');
         });
         
-        this.addEventListener('update', () => {
-            socket.emit('update', this.gameState.players[this.gameState.playerId], this.gameState.foodCollection);
+        this.addEventListener('playerRadiusUpdate', () => {
+            socket.emit('player-radius-update', this.gameState.players[this.gameState.playerId]);
+        });
+        
+        this.addEventListener('foodUpdate', () => {
+            socket.emit('food-update', this.gameState.foodCollection);
         });
         
         requestAnimationFrame(this.gameUpdate);
@@ -101,21 +105,19 @@ export default class MultiplayerGame extends HTMLElement{
                 return;
             }
             
-            // TODO: clean up code, especially the update events
-            // TODO: Simplify this.gameState.players[this.gameState.playerId] and this.gameState.foodCollection.foods[index] if possible
+            // TODO: clean up code
             for(const [index, food] of this.gameState.foodCollection.foods.entries()){
                 if(food.isConsumed){ continue; }
                 const foodIsConsumed = this.checkFullOverlap(player, food);
                 if(foodIsConsumed){
                     this.gameState.foodCollection.foods[index].isConsumed = true;
-                    this.dispatchEvent(new Event('update', { bubbles: true }));
-                    // TODO: need this to actually go up instead of stay the same after radius hits 100
-                    // TODO: create this.area within the player class to fix issue
-                    const newPlayerArea = Math.round(Math.PI * (player.radius * player.radius)) + food.area;
-                    const newPlayerRadius = Math.round(Math.sqrt(newPlayerArea / Math.PI));
-                    if(player.radius !== newPlayerRadius){
-                        this.gameState.players[this.gameState.playerId].radius = newPlayerRadius;
-                        this.dispatchEvent(new Event('update', { bubbles: true }));
+                    this.dispatchEvent(new Event('foodUpdate', { bubbles: true }));
+                    const newPlayerArea = (Math.PI * (player.targetRadius * player.targetRadius)) + food.area;
+                    const newPlayerRadius = Math.sqrt(newPlayerArea / Math.PI);
+                    if(player.targetRadius !== newPlayerRadius){
+                        player.targetRadius = newPlayerRadius;
+                        player.radius = Math.round(newPlayerRadius);
+                        this.dispatchEvent(new Event('playerRadiusUpdate', { bubbles: true }));
                     }
                 }
             }

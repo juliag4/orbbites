@@ -5,6 +5,9 @@ export default class Player{
         this.y = y;
         this.mouseX = x;
         this.mouseY = y;
+        // the unrounded radius from calculation for player growth
+        this.targetRadius = radius;
+        // radius used for all other purposes
         this.radius = radius;
         this.color = color;
         this.maxSpeed = 3;

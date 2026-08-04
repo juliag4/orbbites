@@ -56,12 +56,16 @@ io.on('connection', socket => {
         }
     });
     
-    // TODO: split this in two, one for player and one for foodCollection
-    socket.on('update', (player, foodCollection) => {
+    
+    socket.on('player-radius-update', (player) => {
         if(gamestate.players[socket.id]){
+            gamestate.players[socket.id].targetRadius = player.radius;
             gamestate.players[socket.id].radius = player.radius;
         }
-        gamestate.foodCollection = foodCollection;
+    });
+    
+    socket.on('food-update', (foodCollection) => {
+       gamestate.foodCollection = foodCollection;
     });
 
     socket.on('game-over', () => {
