@@ -49,13 +49,15 @@ export default class MultiplayerGame extends HTMLElement{
         
         // Get your player number
         socket.on('player-number', num => {
-            console.log('player-nunmber socket');
+            console.log('player-number socket');
             if(num === -1){
                 console.log('Sorry the server is full');
             }else{
                 playerNum = parseInt(num);
                 socket.emit('join', 'Room 1');
                 console.log(`Player number ${num} has connected or disconnected`);
+                
+                socket.emit('player-name', document.querySelector('.username').value);
             }
         });
                 
@@ -64,7 +66,8 @@ export default class MultiplayerGame extends HTMLElement{
             this.gameState.updateState(players, food);
         });
                 
-        // event listener for mouse move
+        // Event listeners that will emit events so the gamestate object in the server is updated
+        
         this.canvas.addEventListener('mousemove', (e) => {
             socket.emit('mouse-move', e.clientX, e.clientY, this.canvas.width, this.canvas.height);
         });
@@ -105,22 +108,29 @@ export default class MultiplayerGame extends HTMLElement{
                 return;
             }
             
-            // TODO: clean up code
             for(const [index, food] of this.gameState.foodCollection.foods.entries()){
+                // Don't do anything if food has already been eaten by player
                 if(food.isConsumed){ continue; }
+                // Checks full overlap between player and food to determine if player eats food
                 const foodIsConsumed = this.checkFullOverlap(player, food);
+                
                 if(foodIsConsumed){
                     this.gameState.foodCollection.foods[index].isConsumed = true;
+                    // Dispatches event so the food collection in server is updated
                     this.dispatchEvent(new Event('foodUpdate', { bubbles: true }));
+                    
                     const newPlayerArea = (Math.PI * (player.targetRadius * player.targetRadius)) + food.area;
                     const newPlayerRadius = Math.sqrt(newPlayerArea / Math.PI);
+                    
                     if(player.targetRadius !== newPlayerRadius){
                         player.targetRadius = newPlayerRadius;
                         player.radius = Math.round(newPlayerRadius);
+                        // Dispatches event so the the player's target radius and radius in server are updated
                         this.dispatchEvent(new Event('playerRadiusUpdate', { bubbles: true }));
                     }
                 }
             }
+            
             // TODO: after checking collision with food, check collision with player
             this.translateContext(player.view);
             this.redraw(this.gameState.players);
@@ -174,6 +184,8 @@ export default class MultiplayerGame extends HTMLElement{
             this.ctx.stroke();
             this.ctx.closePath();
         }
+        
+        // TODO: Draw all player names
     };
     
     // checks if food is entirely within player's boundaries

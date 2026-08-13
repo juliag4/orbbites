@@ -45,9 +45,7 @@ export default class GameState{
     getPlayerId(){
         return this.players[this.playerId] || null;
     }
-    
-    // TODO: collision checking
-    
+        
     generateFoodCollection(){
         for(let i = 0; i < this.initialFoodCount; i++){
             const positionMultiplier = (this.mapWidth - this.foodRadius - this.borderThickness) - this.foodRadius - this.borderThickness;

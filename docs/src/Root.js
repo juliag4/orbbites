@@ -71,7 +71,7 @@ class Root extends HTMLElement{
         super();
         this.innerHTML = `
             <div class="title-menu-view">
-                <div class="header">OrbBites</div>
+                <div class="header">Project Orb</div>
                 <div class="input-button-container">
                     <input class="username input-button" placeholder="Name" spellcheck="false"></input>
                     <button class="single-player input-button">Single Player Mode</button>

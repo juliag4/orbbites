@@ -1,6 +1,8 @@
 export default class Player{
     constructor(id, x, y, radius, color){
         this.id = id;
+        this.name = '';
+        
         this.x = x;
         this.y = y;
         this.mouseX = x;

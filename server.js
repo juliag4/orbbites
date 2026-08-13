@@ -46,6 +46,12 @@ io.on('connection', socket => {
         gamestate.addPlayer(socket.id);
     });
     
+    socket.on('player-name', (playerName) => {
+        if(gamestate.players[socket.id]){
+            gamestate.player[socket.id].name = playerName;
+        }
+    });
+    
     socket.on('mouse-move', (mouseX, mouseY, canvasWidth, canvasHeight) => {
         if(gamestate.players[socket.id]){
             gamestate.players[socket.id].mouseX = mouseX;
