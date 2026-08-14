@@ -48,7 +48,7 @@ io.on('connection', socket => {
     
     socket.on('player-name', (playerName) => {
         if(gamestate.players[socket.id]){
-            gamestate.player[socket.id].name = playerName;
+            gamestate.players[socket.id].name = playerName;
         }
     });
     

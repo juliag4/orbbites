@@ -23,6 +23,12 @@ AddStyle(`
     }
 `);
 
+const fontSettings = {
+  family: "sans-serif",
+  size: 100,
+  sizeAndFamily: "100px sans-serif"
+};
+
 export default class MultiplayerGame extends HTMLElement{
     constructor(){
         super();
@@ -163,7 +169,7 @@ export default class MultiplayerGame extends HTMLElement{
                             this.gameState.mapHeight - this.ctx.lineWidth);
         
         for(const food of this.gameState.foodCollection.foods){
-            // Styling of the circle itself
+            // Styling of the food circle itself
             if(food.isConsumed){ continue; }
             this.ctx.beginPath();
             this.ctx.arc(food.x, food.y, food.radius, 0, 2 * Math.PI);
@@ -175,7 +181,7 @@ export default class MultiplayerGame extends HTMLElement{
         }
         
         for(const [key, player] of Object.entries(players)){
-            // Styling of the circle itself
+            // Styling of the player circle itself
             this.ctx.beginPath();
             this.ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
             this.ctx.fillStyle = player.color;
@@ -183,9 +189,29 @@ export default class MultiplayerGame extends HTMLElement{
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
             this.ctx.closePath();
+            
+            // Styling / calculations for name within the circle
+            
+            this.ctx.font = fontSettings.sizeAndFamily;
+            // Width at the initial font size
+            const initialLineWidth = this.ctx.measureText(player.name).width;
+
+            // Multiplies ratio (target width / initiallineWidth) by initial font size to calculate font size
+            const calculatedFontSize = (((player.radius * 2) - 8) / initialLineWidth) * fontSettings.size;
+            // Ensures font size is at least the minimum size
+            const finalFontSize = Math.max(calculatedFontSize, this.gameState.minFontSize);
+            
+            // Styling and positioning of text
+            this.ctx.font = `${finalFontSize}px ${fontSettings.family}`;
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            // TODO: change text color based on player's circle color
+            this.ctx.fillStyle = '#000000';
+            
+            // Draw's text based on player's name input
+            this.ctx.fillText(player.name, player.x, player.y);
         }
         
-        // TODO: Draw all player names
     };
     
     // checks if food is entirely within player's boundaries

@@ -14,6 +14,9 @@ export default class GameState{
         this.foodCollection = new FoodCollection();
         this.initialFoodCount = (this.mapWidth * this.mapHeight) / 10000;
         this.foodRadius = 10;
+        
+        // min font size for player name
+        this.minFontSize = 8;
     };
     
     updateState(players, foodCollection){
