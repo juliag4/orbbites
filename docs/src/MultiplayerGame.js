@@ -159,6 +159,10 @@ export default class MultiplayerGame extends HTMLElement{
     }
     
     redraw(players){
+        // Aligning the text
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        
         // Border drawing
         this.ctx.strokeStyle = 'black';
         this.ctx.lineWidth = this.gameState.borderThickness;
@@ -201,12 +205,9 @@ export default class MultiplayerGame extends HTMLElement{
             // Ensures font size is at least the minimum size
             const finalFontSize = Math.max(calculatedFontSize, this.gameState.minFontSize);
             
-            // Styling and positioning of text
+            // Styling and color of the text
             this.ctx.font = `${finalFontSize}px ${fontSettings.family}`;
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-            // TODO: change text color based on player's circle color
-            this.ctx.fillStyle = '#000000';
+            this.ctx.fillStyle = player.textColor;
             
             // Draw's text based on player's name input
             this.ctx.fillText(player.name, player.x, player.y);

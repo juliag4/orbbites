@@ -30,19 +30,32 @@ export default class GameState{
         const xPos = Math.floor(Math.random() * (positionMultiplier)) + this.initialPlayerRadius + this.borderThickness;
         const yPos = Math.floor(Math.random() * (positionMultiplier)) + this.initialPlayerRadius + this.borderThickness;
         const color = this.getRandomRGB();
+        const textColor = this.getTextColor(color);
         
-        this.players[String(id)] = new Player(String(id), xPos, yPos, this.initialPlayerRadius, color);
+        this.players[String(id)] = new Player(String(id), xPos, yPos, this.initialPlayerRadius, color, textColor);
     }
     
     deletePlayer(id){
         delete this.players[String(id)];
     }
     
-    getRandomRGB() {
+    getRandomRGB(){
       const r = Math.floor(Math.random() * 256);
       const g = Math.floor(Math.random() * 256);
       const b = Math.floor(Math.random() * 256);
       return `rgb(${r}, ${g}, ${b})`;
+    }
+    
+    getTextColor(color){
+        // regex matches any digit one or more times for all instances
+        // ensures that parseInt parses the color into base 10
+        const [r, g, b] = color.match(/\d+/g).map(rgb => parseInt(rgb, 10));
+          
+        // calculate YIQ brightness score (the color space used by the analog NTSC color TV system)
+        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+        // if color is bright, use black text. otherwise use white text
+        return yiq >= 128 ? '#000000' : '#ffffff';
     }
     
     getPlayerId(){

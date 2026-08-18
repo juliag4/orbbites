@@ -1,5 +1,5 @@
 export default class Player{
-    constructor(id, x, y, radius, color){
+    constructor(id, x, y, radius, color, textColor){
         this.id = id;
         this.name = '';
         
@@ -7,11 +7,15 @@ export default class Player{
         this.y = y;
         this.mouseX = x;
         this.mouseY = y;
+        
         // the unrounded radius from calculation for player growth
         this.targetRadius = radius;
         // radius used for all other purposes
         this.radius = radius;
+        
         this.color = color;
+        this.textColor = textColor;
+        
         this.maxSpeed = 3;
         
         this.view = {x: 0, y: 0};
