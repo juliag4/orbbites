@@ -1,5 +1,4 @@
 import {AddStyle} from './Styles.js';
-import Game from './Game.js';
 import MultiplayerGame from './MultiplayerGame.js';
 
 AddStyle(`
@@ -79,18 +78,16 @@ class Root extends HTMLElement{
                 </div>
             </div>
         
-            <orb-game class="hidden"></orb-game>
             <orb-multiplayer class="hidden"></orb-multiplayer>
         `;
         
         const titleMenuView = this.querySelector('.title-menu-view');
-        const singlePlayerGame = this.querySelector('orb-game');
         const multiPlayerGame = this.querySelector('orb-multiplayer');
                         
         this.querySelector('.single-player').addEventListener('click', () => {
             titleMenuView.classList.add('hidden');
-            singlePlayerGame.classList.remove('hidden');
-            singlePlayerGame.startGame();
+            multiPlayerGame.classList.remove('hidden');
+            multiPlayerGame.startGame();
         });
         
         this.querySelector('.multiplayer').addEventListener('click', () => {

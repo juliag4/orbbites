@@ -19,6 +19,7 @@ AddStyle(`
     }
 
     canvas{
+        background-color: lightblue;
         object-fit: contain;
     }
 `);
@@ -49,6 +50,7 @@ export default class MultiplayerGame extends HTMLElement{
         this.gameUpdate = this.gameUpdate.bind(this);
     }
     
+    // TODO: maybe specifiy single/multiplayer in a parameter here, then determine what happens based on that
     startGame(){
         let playerNum = 0;
         const socket = io();
