@@ -62,7 +62,7 @@ export default class MultiplayerGame extends HTMLElement{
                 console.log('Sorry the server is full');
             }else{
                 playerNum = parseInt(num);
-                socket.emit('join', 'Room 1');
+                socket.emit('join');
                 console.log(`Player number ${num} has connected or disconnected`);
                 
                 socket.emit('player-name', document.querySelector('.username').value);

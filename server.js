@@ -16,12 +16,17 @@ app.use(express.static(path.join(import.meta.dirname, 'docs')));
 // Start server
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-let room = '';
 let gamestate = new GameState();
 gamestate.generateFoodCollection();
 
+// Function to reduce redundancy
+const getPlayer = (socketId) => gamestate.players[socketId];
+
+const isInvalidNumber = (val) => typeof val !== 'number' || !isFinite(val);
+
 // Handle a socket connection request from web client
-const connections = [null, null, null, null, null, null, null, null];
+const connections = [null, null, null, null, null, null, null, null, null, null];
+
 io.on('connection', socket => {
     // Find an available player number
     let playerIndex = -1;
@@ -40,28 +45,35 @@ io.on('connection', socket => {
     
     connections[playerIndex] = true;
     
-    socket.on('join', (roomId) => {
+    socket.on('join', () => {
         socket.join('Room 1');
-        console.log('adding player!!');
+        console.log(`Adding player ${playerIndex}`);
         gamestate.addPlayer(socket.id);
     });
     
     socket.on('player-name', (playerName) => {
-        if(gamestate.players[socket.id]){
-            gamestate.players[socket.id].name = playerName;
+        const player = getPlayer(socket.id);
+        if(!player) { return; }
+        
+        if(playerName.trim().length > 0){
+            // Ensures player's name doesn't exceed 15 characters
+            player.name = playerName.trim().substring(0, 15);
         }
     });
     
     socket.on('mouse-move', (mouseX, mouseY, canvasWidth, canvasHeight) => {
-        if(gamestate.players[socket.id]){
-            gamestate.players[socket.id].mouseX = mouseX;
-            gamestate.players[socket.id].mouseY = mouseY;
-            gamestate.players[socket.id].calculateMoves(mouseX, mouseY);
-            gamestate.players[socket.id].calculateView(canvasWidth, canvasHeight);
-            gamestate.players[socket.id].adjustView(canvasWidth, canvasHeight, gamestate.mapWidth, gamestate.mapHeight);
-        }
+        const player = getPlayer(socket.id);
+        if(!player) { return; }
+        
+        if ([mouseX, mouseY, canvasWidth, canvasHeight].some(isInvalidNumber)) { return; }
+        
+        player.mouseX = mouseX;
+        player.mouseY = mouseY;
+        
+        player.calculateMoves(mouseX, mouseY);
+        player.calculateView(canvasWidth, canvasHeight);
+        player.adjustView(canvasWidth, canvasHeight, gamestate.mapWidth, gamestate.mapHeight);
     });
-    
     
     socket.on('player-radius-update', (player) => {
         if(gamestate.players[socket.id]){
